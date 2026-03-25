@@ -170,4 +170,26 @@ h3 {
     .site-header h1 {
         font-size: 1.4rem
     }
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            color: white;
+        }
+    
+        .hero button {
+            padding: 12px 20px;
+            margin-top: 20px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    
+        .info {
+            display: flex;
+            justify-content: space-around;
+            padding: 40px;
+        }
 }

@@ -9,7 +9,12 @@
 </head>
 
 <body>
-    <header class="site-header">
+
+    <header class="hero">
+        <h1>🏠 House Price Predictor</h1>
+        <p>Real-time ML predictions powered by Google Cloud Run</p>
+        <button onclick="scrollToApp()">Try It Now</button>
+    </header>
         <div class="container">
             <h1>House Price Regression — Live API Inference</h1>
             <p class="tagline">
@@ -19,6 +24,20 @@
     </header>
 
     <main class="container">
+        <section class="info">
+            <div>
+                <h2>⚡ Fast API</h2>
+                <p>Deployed using FastAPI on Google Cloud Run</p>
+            </div>
+            <div>
+                <h2>🧠 Machine Learning</h2>
+                <p>Linear regression with feature scaling</p>
+            </div>
+            <div>
+                <h2>🌐 Full Stack</h2>
+                <p>Frontend + backend + cloud integration</p>
+            </div>
+        </section>
 
         <section class="card" id="inferenceCard">
             <h2>Run Prediction</h2>
@@ -151,6 +170,9 @@
 
         // Init
         buildInputs();
+        function scrollToApp() {
+                document.getElementById("inferenceCard").scrollIntoView({ behavior: "smooth" });
+            }
     </script>
 </body>
 
