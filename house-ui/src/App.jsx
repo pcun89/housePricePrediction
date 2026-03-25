@@ -44,11 +44,14 @@ export default function App() {
       );
 
       const data = await res.json();
+      console.log("API RESPONSE:", data); // 👈 ADD THIS
+
       setPrice(data.prediction * 100000);
     } catch (e) {
-      console.error(e);
+      console.error("ERROR:", e); // 👈 ADD THIS
     }
   };
+
 
   const chartData = {
     labels: ["Predicted Price"],
