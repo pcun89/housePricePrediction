@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>House Price Regression — Live API Inference</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>House Price Regression — Live API Inference</h1>
+            <p class="tagline">
+                Enter features and get real-time predictions from a deployed ML model on Google Cloud Run.
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="card" id="inferenceCard">
+            <h2>Run Prediction</h2>
+
+            <form id="featuresForm" onsubmit="return false;">
+                <div id="featureInputs"
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                </div>
+
+                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                    <button id="predictBtn" class="btn">Predict</button>
+                    <button id="exampleBtn" class="btn">Fill example values</button>
+                    <button id="resetBtn" class="btn">Reset</button>
+                </div>
+            </form>
+
+            <div style="margin-top:16px;">
+                <h3>Prediction</h3>
+                <div id="predictionBox" class="code" style="font-size:1.05rem;">
+                    — no prediction yet —
+                </div>
+            </div>
+        </section>
+
+        <footer class="card footer">
+            <p class="small">
+                This app connects a frontend UI to a deployed machine learning model using REST APIs.
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        // Feature names (must match backend order)
+        const featureNames = [
+            "MedInc", "HouseAge", "AveRooms", "AveBedrms",
+            "Population", "AveOccup", "Latitude", "Longitude"
+        ];
+
+        const featureInputsDiv = document.getElementById('featureInputs');
+        const predictBtn = document.getElementById('predictBtn');
+        const predictionBox = document.getElementById('predictionBox');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Build input fields
+        function buildInputs() {
+            featureNames.forEach((name, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+
+                const label = document.createElement('label');
+                label.textContent = name;
+                label.style.fontWeight = '600';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = 'any';
+                input.dataset.idx = idx;
+                input.style.padding = '8px';
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                featureInputsDiv.appendChild(wrapper);
+            });
+        }
+
+        // Read values
+        function readFeatureValues() {
+            const inputs = featureInputsDiv.querySelectorAll('input');
+            const values = [];
+
+            inputs.forEach(inp => {
+                const v = inp.value.trim();
+                if (v === "") throw new Error("All fields must be filled");
+                values.push(Number(v));
+            });
+
+            return values;
+        }
+
+        // 🚀 CLOUD API PREDICTION
+        async function doPredict() {
+            try {
+                const raw = readFeatureValues();
+
+                const response = await fetch(
+                    "https://house-api-816554231079.us-central1.run.app/predict",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ values: raw })
+                    }
+                );
+
+                const data = await response.json();
+
+                const price = data.prediction * 100000;
+
+                predictionBox.textContent =
+                    `Estimated House Price: $${price.toLocaleString(undefined, {
+                        maximumFractionDigits: 0
+                    })}`;
+
+            } catch (e) {
+                predictionBox.textContent = `Error: ${e.message}`;
+            }
+        }
+
+        // Example values
+        exampleBtn.addEventListener('click', () => {
+            const example = [8.0, 20, 6, 1, 3000, 3, 34, -118];
+            const inputs = featureInputsDiv.querySelectorAll('input');
+
+            inputs.forEach((inp, i) => {
+                inp.value = example[i];
+            });
+        });
+
+        // Reset
+        resetBtn.addEventListener('click', () => {
+            const inputs = featureInputsDiv.querySelectorAll('input');
+            inputs.forEach(inp => inp.value = "");
+            predictionBox.textContent = "— no prediction yet —";
+        });
+
+        predictBtn.addEventListener('click', doPredict);
+
+        // Init
+        buildInputs();
+    </script>
+</body>
+
+</html>
