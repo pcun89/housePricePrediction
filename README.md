@@ -1,4 +1,4 @@
-# House Price Predictin 
+# House Price Prediction
 
 **Project:** Predict median house value (California Housing) with a linear/regression model and show how to embed the trained model into C for microcontrollers.
 
@@ -16,19 +16,3 @@
 - Linear (Ridge) models are small and predictable — ideal for embedded devices (tiny RAM/Flash)
 - Exporting coefficients + scaler allows you to run inference in pure C with zero ML runtime dependencies
 
-## How to run (training)
-1. Create a virtualenv and activate it:
-```bash
-python -m venv venv
-source venv/bin/activate    # macOS / Linux
-venv\Scripts\activate       # Windows
-Install dependencies:
-
-bash
-Copy code
-pip install -r requirements.txt
-Run training:
-
-bash
-Copy code
-python main_regression_embedded.py
